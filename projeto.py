@@ -107,8 +107,11 @@ for caminho_pdf in arquivos_pdf:
             valores[12:13] = valores[12].split('+')
             valores[14] = valores[14].upper()
             if "E: " in valores[15]:
-                valores[15] = valores[15].split('E: ')[1]
-                valores[15] = valores[15].strip()    
+                try:
+                    valores[15] = valores[15].split("E: ")[1].strip()
+                except IndexError:
+                    print("Aviso: 'E: ' encontrado, mas sem conteúdo após. Ignorando valor.")
+                    valores[15] = ""        
             
             valores[15] = valores[15].upper()
             valores[16] = valores[16].upper()
