@@ -6,6 +6,7 @@ from tkinter import Tk, filedialog  # abrir caixa de diálogo
 import os  # abrir a planilha
 import time
 from time import sleep
+import re
 
 
 Tk().withdraw()
@@ -21,8 +22,9 @@ print(arquivos_pdf) # array de caminhos dos pdfs
 
 wb = load_workbook(r"C:\Users\joao.beserra\Documents\sala-tecnica.xlsx")
 ws = wb["Planilha1"]
-ordem_count = 0
-contador = 1
+
+contador = 0
+page = 1
 # para cada caminho|pdf dentro do array de caminhos
 inicio = time.time()
 for caminho_pdf in arquivos_pdf:
@@ -31,12 +33,15 @@ for caminho_pdf in arquivos_pdf:
         
         #vai ler somente a primeira pagina
         for pagina in pdf.pages:
-            ordem_count= ordem_count+1
+            print(f"numero da pagina = {page}")
+            page += 1
             #extrair o texto da tabela
             tabela = pagina.extract_table()
-            if not tabela:
-                print("Página ignorada: nenhuma tabela detectada")
+            print(tabela[0][0])
+            if not tabela or not re.match(r"^\d{5}-\d{2}$", tabela[0][0]):
+                print("Página ignorada: nenhuma tabela detectada ou formato inválido")
                 continue
+                        
             
             primeira_linha = tabela[0]
             
@@ -101,7 +106,10 @@ for caminho_pdf in arquivos_pdf:
             valores[12:13] = valores[12].split('+')
             valores[12:13] = valores[12].split('+')
             valores[14] = valores[14].upper()
-            valores[15] = valores[15].split('E: ')[1]
+            if "E: " in valores[15]:
+                valores[15] = valores[15].split('E: ')[1]
+                valores[15] = valores[15].strip()    
+            
             valores[15] = valores[15].upper()
             valores[16] = valores[16].upper()
             valores[17] = valores[17].split('\n')[1]
@@ -163,7 +171,7 @@ for caminho_pdf in arquivos_pdf:
 fim = time.time()
 tempo_total = fim - inicio
 print(f"Tempo total de execução: {tempo_total:.2f} segundos")
-print("Foram planilhadas", ordem_count, "ordens de serviço!")
+print("Foram planilhadas", contador, "ordens de serviço!")
 
 
 while True:
