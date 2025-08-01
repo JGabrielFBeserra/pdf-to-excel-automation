@@ -5,6 +5,7 @@ from copy import copy  # copiar estilos
 from tkinter import Tk, filedialog  # abrir caixa de diálogo
 import os  # abrir a planilha
 import time
+from datetime import datetime
 from time import sleep
 import re
 
@@ -90,13 +91,16 @@ for caminho_pdf in arquivos_pdf:
 
 
             
-            valores[11] = valores[11].replace(" ", "-")
+        
             if "artesp".lower() in valores[1].lower():
                 valores[1] = "ARTESP"
             else: 
                 valores[1] = "ENGENHARIA" 
+                
+            valores[11] = valores[11].replace(" ", "-")
             
             valores[12:13] = valores[12].split('<>')
+            
             del valores[13]
             valores[12:13] = valores[12].split('+')
             valores[12:13] = valores[12].split('+')
@@ -128,8 +132,11 @@ for caminho_pdf in arquivos_pdf:
                 celula_origem = ws.cell(row=linha_origem, column=col)
                 celula_destino = ws.cell(row=linha_destino, column=col)
                 
+                if col in [1, 4, 5, 6]:
+                    valor = datetime.strptime(valor.strip(), "%d/%m/%Y").date()
+                    celula_destino.value = valor
 
-                if col == 8:
+                elif col == 8:
                     formula_mes = f'=UPPER(LEFT(TEXT(F{linha_atual},"mmmm"),1)) & MID(TEXT(F{linha_atual},"mmmm"),2,10)'
                     celula_destino.value = formula_mes
                     
