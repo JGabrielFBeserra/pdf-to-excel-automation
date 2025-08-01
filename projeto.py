@@ -37,17 +37,12 @@ for caminho_pdf in arquivos_pdf:
             page += 1
             #extrair o texto da tabela
             tabela = pagina.extract_table()
-            print(tabela[0][0])
+            
             if not tabela or not re.match(r"^\d{5}-\d{2}$", tabela[0][0]):
                 print("Página ignorada: nenhuma tabela detectada ou formato inválido")
                 continue
                         
-            
-            primeira_linha = tabela[0]
-            
-            if not any(celula for celula in primeira_linha if celula and '\n' in celula):
-                print("Tabela com layout diferente. Página ignorada.")
-                continue  
+           
             
              
             count = 0
